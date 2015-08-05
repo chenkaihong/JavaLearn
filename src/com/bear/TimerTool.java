@@ -30,6 +30,9 @@ public abstract class TimerTool implements Demos{
 		this.lowerLimit = period-errorRange;
 	}
 	
+	/**
+	 * 使用守护线程, 检测时间变动
+	 */
 	public void start(){
 		nowTime = System.currentTimeMillis();
 		beforeTime = nowTime - period;
