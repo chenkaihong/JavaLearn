@@ -1,4 +1,4 @@
-package com.bear.scan;
+package com.bear;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
 import com.bear.tool.ToolClassFind;
 import com.bear.tool.ToolList;
 import com.bear.tool.ToolPath;
