@@ -28,6 +28,9 @@ public class Scanner {
 		
 		for(Class<?> cla : demoList){
 			Description des = cla.getAnnotation(Description.class);
+			if(des == null){
+				throw new RuntimeException("Some class havn't description! class: " + cla.getSimpleName());
+			}
 			List<String> desList = desMap.get(des.sort());
 			desList.add(String.format(desString, cla.getSimpleName(), des.description()));
 		}
