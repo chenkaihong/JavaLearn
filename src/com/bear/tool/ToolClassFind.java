@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -108,6 +109,7 @@ public class ToolClassFind {
          */
         List<String> classFiles = new ArrayList<String>();
         String tempName = null;
+        Pattern pattern = Pattern.compile(targetFileName);
         // 判断目录是否存在
         File baseDir = new File(baseDirName);
         if (!baseDir.exists() || !baseDir.isDirectory()) {
@@ -120,7 +122,7 @@ public class ToolClassFind {
                     classFiles.addAll(findFiles(baseDirName + File.separator + filelist[i], targetFileName));
                 } else {
                     tempName = readfile.getName();
-                    if (ToolString.wildcardMatch(targetFileName, tempName)) {
+                    if (pattern.matcher(tempName).matches()) {
                         String classname;
                         String temp = readfile.getAbsoluteFile().toString().replaceAll("\\\\", "/");
                         
@@ -195,7 +197,7 @@ public class ToolClassFind {
 	public <T> List<Class<? extends T>> search(List<String> scanPath) {
     	List<String> classFileList = new ArrayList<String>();
     	if(!ToolString.isEmpty(classpath)){
-    		classFileList.addAll(findFiles(classpath, "*.class"));
+    		classFileList.addAll(findFiles(classpath, "\\w*.class"));
     	}
     	if(!ToolString.isEmpty(libDir)){
     		classFileList.addAll(findjarFiles(libDir, includeJars));
@@ -203,6 +205,7 @@ public class ToolClassFind {
         
         return extraction(target, classFileList, scanPath);
     }
+    
     /**
      * 抓取路径下所有符合规则的class文件,并返回对应的class
      * @param scanPath
