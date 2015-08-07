@@ -1,4 +1,4 @@
-package com.bear;
+package com.bear.demo;
 
 import com.bear.scan.Constant;
 import com.bear.scan.Demos;

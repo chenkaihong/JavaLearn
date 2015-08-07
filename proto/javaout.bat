@@ -1,0 +1,1 @@
+protoc Cmd.proto --java_out=javaout

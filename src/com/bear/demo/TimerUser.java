@@ -1,4 +1,4 @@
-package com.bear;
+package com.bear.demo;
 
 import java.util.Timer;
 import java.util.TimerTask;
