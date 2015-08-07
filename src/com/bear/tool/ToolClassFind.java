@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 类文件检索
- * @author 董华健
+ * @author 陈开鸿
  */
 public class ToolClassFind {
 
