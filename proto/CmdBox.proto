@@ -1,0 +1,25 @@
+package com.bear.demo.nettyDemo;
+message Cmd {
+    required Message message = 1;
+    optional bytes childMessage = 2;
+    optional sint32 appendCode = 3;
+    optional bytes appendData = 4;
+    optional bool compress = 5;//data 是否压缩
+}
+
+message Message {
+    required sint32 messageId=1;
+    required sint32 serverId=2;
+    optional sint32 playerId=3;
+    optional int64 clientTime=4;
+    optional int64 serverTime=5;
+}
+
+message PlayerMoveRequest{
+    required uint32 moveStep=1;
+    required uint32 moveDirection=2;
+}
+message PlayerMoveResponse{
+	required uint32 x=1;
+	required uint32 y=2;
+}

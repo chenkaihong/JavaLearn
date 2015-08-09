@@ -86,7 +86,7 @@ public class ToolClassFind {
      * @param scanList  需要扫描的类路径
      * @return
      */
-    public static boolean valiScan(String classFile, List<String> scanList){
+    public static boolean valiScan(String classFile, String ...scanList){
         for (String scanPath : scanList) {
         	if(classFile.startsWith(scanPath)){
         		return true;
@@ -194,7 +194,7 @@ public class ToolClassFind {
      * @return
      */
     @SuppressWarnings("unchecked")
-	public <T> List<Class<? extends T>> search(List<String> scanPath) {
+	public <T> List<Class<? extends T>> search(String ...scanPath) {
     	List<String> classFileList = new ArrayList<String>();
     	if(!ToolString.isEmpty(classpath)){
     		classFileList.addAll(findFiles(classpath, "\\w*.class"));
@@ -206,17 +206,8 @@ public class ToolClassFind {
         return extraction(target, classFileList, scanPath);
     }
     
-    /**
-     * 抓取路径下所有符合规则的class文件,并返回对应的class
-     * @param scanPath
-     * @return
-     */
-    public <T> List<Class<? extends T>> search() {
-    	return search(null);
-    }
-    
     @SuppressWarnings("unchecked")
-    private static <T> List<Class<? extends T>> extraction(Class<T> clazz, List<String> classFileList, List<String> scanList) {
+    private static <T> List<Class<? extends T>> extraction(Class<T> clazz, List<String> classFileList, String ...scanList) {
         List<Class<? extends T>> classList = new ArrayList<Class<? extends T>>();
         for (String classFile : classFileList) {
         	if(!ToolList.isEmpty(scanList) && !valiScan(classFile, scanList)){
