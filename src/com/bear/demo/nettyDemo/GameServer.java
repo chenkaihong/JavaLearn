@@ -55,7 +55,7 @@ public final class GameServer {
 	public void loadConfig(String ...scanPath) throws Exception{
     	List<Class<?>> classes = ToolClassFind.of(GameSystem.class, ToolPath.getRootClassPath()).search();
 		for(Class<?> clazz : classes){
-			MessageSystem messageSystem = clazz.getDeclaredAnnotation(MessageSystem.class);
+			MessageSystem messageSystem = clazz.getAnnotation(MessageSystem.class);
 			String systemDes = messageSystem.description();
 			// clazz 检验
 			
