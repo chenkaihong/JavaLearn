@@ -13,14 +13,24 @@ public class ToolString {
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {
+		// xF0 x9F x92 x95
 		// xf0 x9f x92 x80
+		// xF0 x9F x8C xB9
 		// 💀 UTF-8 4字节模式
-		// byte[] bytes = new byte[]{(byte) 0xf0, (byte) 0x9f, (byte) 0x92, (byte) 0x80};
-		// System.out.println(new String(bytes,"UTF-8"));
 		
-		System.out.println(hasUTF_4("abdki汉字💀VI、%$^%&"));     // 这行中,💀是UTF-8的4字节模式
-		System.out.println(hasUTF_4("#$%@#$%fdsf12312贰＆ァБ"));
+//		 byte[] bytes = new byte[]{(byte) 0xF0, (byte) 0x9F, (byte) 0x8C, (byte) 0xB9};
+//		 System.out.println(new String(bytes,"UTF-8"));
 		
+//		System.out.println(hasUTF_4("abdki汉字💀VI、%$^%&"));     // 这行中,💀是UTF-8的4字节模式
+//		System.out.println(hasUTF_4("#$%@#$%fdsf12312贰＆ァБ"));
+		
+		System.out.println(hasUTF_4("💕"));
+		
+		System.out.println(hasUTF_4("🌹"));
+		
+		for(byte s : "🌹".getBytes()){
+			System.out.println(Integer.toHexString(s));
+		}
 	}
 	
 	/**
