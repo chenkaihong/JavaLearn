@@ -1,8 +1,10 @@
 package com.bear.demo.NIO;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -22,15 +24,30 @@ public class BIOServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally{
-			if(server != null){
-				System.out.println("The time server close");
-				try {
-					server.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				server = null;
+			close(server);
+		}
+	}
+	
+	public static void close(ServerSocket server){
+		try {
+			if(server != null)
+				server.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			server = null;
+		}
+	}
+	
+	public static void close(Closeable obj){
+		try {
+			if(obj != null){
+				obj.close();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			obj = null;
 		}
 	}
 }
@@ -43,11 +60,26 @@ class TimeServerHandler implements Runnable{
 	
 	@Override
 	public void run() {
+		BufferedReader in = null;
+		PrintWriter out = null;
 		try {
-			BufferedReader read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new PrintWriter(socket.getOutputStream(), true);
 			
+			while(true){
+				String msg = in.readLine();
+				if(msg == null)
+					break;
+				System.out.println(msg);
+				out.println("Copy that!");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally{
+			BIOServer.close(in);
+			out.flush();
+			BIOServer.close(out);
 		}
 	}
+	
 }
