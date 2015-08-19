@@ -31,7 +31,7 @@ public final class GameServer {
     	logger.info("装载配置");
     	GameServer.me().loadConfig("com.bear.demo.nettyDemo");
     	logger.info("启动服务端");
-    	GameServer.me().start(PORT, LogLevel.DEBUG);
+    	GameServer.me().start(PORT, LogLevel.INFO);
     }
     
     public void start(int port, LogLevel logLevel) throws Exception{

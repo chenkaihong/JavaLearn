@@ -42,7 +42,7 @@ public final class GameClient {
             Bootstrap b = new Bootstrap();
             b.group(group)
              .channel(NioSocketChannel.class)
-             .handler(new GameClientInitializer());
+             .handler(new GameClientConfig());
 
             Channel ch = b.connect(HOST, PORT).sync().channel();
             
