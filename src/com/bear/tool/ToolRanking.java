@@ -1,5 +1,6 @@
 package com.bear.tool;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -123,13 +125,13 @@ public class ToolRanking implements Iterable<Rank> {
 				mapWithPosition.remove(temp.position);
 				topList.remove(temp);
 			}
+			
+			// 当移动名次涉及到top, 则重新装载top名单
+			if(thiss != null && thiss.position <= topSize){
+				topList = newTop();
+			}
 		}finally{
 			wLock.unlock();
-		}
-		
-		// 当移动名次涉及到top, 则重新装载top名单
-		if(thiss != null && thiss.position <= topSize){
-			topList = newTop();
 		}
 	}
 	
@@ -153,6 +155,11 @@ public class ToolRanking implements Iterable<Rank> {
 		}
 		return rank;
 	}
+	/**
+	 * 经测试,这个地方如果并发较高(1秒3000访问),则会出现试图不一致问题,但第二次访问就会正常,
+	 * 可以通过每次访问返回重新封装的类解决,但成本过高,所以这里不做处理(在并发少的情况下,发生概率极低)
+	 * @return
+	 */
 	public List<Rank> getTop(){
 		return Collections.unmodifiableList(topList);
 	}
@@ -323,7 +330,7 @@ public class ToolRanking implements Iterable<Rank> {
 	
 	public class Rank{
 		private int playerID;
-		private int score;
+		private volatile int score;
 		private int position;
 		private long lastTime;
 		
@@ -356,5 +363,194 @@ public class ToolRanking implements Iterable<Rank> {
 		public long getLastTime() {
 			return lastTime;
 		}
+	}
+	
+	public static void main(String[] args) {
+		final int topSize = 20;
+		final int capacity = 50;
+		final int sleepTime = 1;
+		final int watchTime = 2000;
+		final ToolRanking rank = new ToolRanking(topSize, capacity);
+		
+		final Map<Integer, Integer> map1 = new HashMap<Integer, Integer>();
+		final Map<Integer, Integer> map2 = new HashMap<Integer, Integer>();
+		final Map<Integer, Integer> map3 = new HashMap<Integer, Integer>();
+		final Map<Integer, Integer> map4 = new HashMap<Integer, Integer>();
+		
+		for(int i = 1200001; i <= 1200050; i++){
+			map1.put(i, 0);
+		}
+		for(int i = 1200051; i <= 1200100; i++){
+			map2.put(i, 0);	
+		}
+		for(int i = 1200101; i <= 1200150; i++){
+			map3.put(i, 0);
+		}
+		for(int i = 1200151; i <= 1200200; i++){
+			map4.put(i, 0);
+		}
+		
+		new Thread(new Runnable() {
+			private Random rand = new Random();
+			@Override
+			public void run() {
+				while(true){
+					int playerID = rand.nextInt(50)+1+0+1200000;
+					int point = map1.get(playerID);
+					point += rand.nextInt(10);
+					map1.put(playerID, point);
+					rank.mark(playerID, point);
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+				}
+				}
+			}
+		}).start();
+		
+		new Thread(new Runnable() {
+			private Random rand = new Random();
+			@Override
+			public void run() {
+				while(true){
+					int playerID = rand.nextInt(50)+1+50+1200000;
+					int point = map2.get(playerID);
+					point += rand.nextInt(10);
+					map2.put(playerID, point);
+					rank.mark(playerID, point);
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
+		new Thread(new Runnable() {
+			private Random rand = new Random();
+			@Override
+			public void run() {
+				while(true){
+					int playerID = rand.nextInt(50)+1+100+1200000;
+					int point = map3.get(playerID);
+					point += rand.nextInt(10);
+					map3.put(playerID, point);
+					rank.mark(playerID, point);
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
+		new Thread(new Runnable() {
+			private Random rand = new Random();
+			@Override
+			public void run() {
+				while(true){
+					int playerID = rand.nextInt(50)+1+150+1200000;
+					int point = map4.get(playerID);
+					point += rand.nextInt(10);
+					map4.put(playerID, point);
+					rank.mark(playerID, point);
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				while(true){
+//					StringBuilder sb  = new StringBuilder();
+//					sb.append("-------------------------------------").append("\n");
+//					List<Rank> rankList = rank.getTop();
+//					for(Rank s : rankList){
+//						sb.append(s.getPosition()).append("\t").append(s.getPlayerID()).append("\t").append(s.getScore()).append("\n");
+//					}
+//					sb.append("-------------------------------------").append("\n");
+//					try {
+//						ToolFile.fromStringToFile(sb.toString(), "d://log_ranking.txt", false, true);
+//					} catch (IOException e1) {
+//						e1.printStackTrace();
+//					}
+//					
+//					System.out.println(sb.toString());
+//					try {
+//						Thread.sleep(2000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}).start();
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					boolean flag = false;
+					StringBuilder sb  = new StringBuilder();
+					sb.append("-------------------------------------").append("\n");
+					List<Rank> rankList = rank.getTop();
+					List<Integer> sortList = new ArrayList<Integer>();
+					for(Rank s : rankList){
+						sb.append(s.getPosition()).append("\t").append(s.getPlayerID()).append("\t").append(s.getScore()).append("\n");
+						sortList.add(s.getScore());
+					}
+					Collections.sort(sortList, new Comparator<Integer>() {
+						@Override
+						public int compare(Integer o1, Integer o2) {
+							return o1 >= o2?-1:1;
+						}
+					});
+					sb.append(sortList).append("\n");
+					for(int i = 0; i < rankList.size(); i++){
+						int score1 = rankList.get(i).getScore();
+						int socre2 = sortList.get(i);
+						if(score1 != socre2){
+							flag = true;
+							System.out.println(String.format("PlayerID: %s, score1: %d, score2: %d", rankList.get(i).getPlayerID(), score1, socre2));
+							break;
+						}
+					}
+					sb.append("-------------------------------------").append("\n");
+					
+					int size1 = rank.mapWithPlayerID.size();
+					int size2 = rank.mapWithPosition.size();
+					if(size1 > capacity || size2 > capacity){
+						System.out.println("Capacity: " + size1 + " - " + size2);
+					}
+					
+					int topSizeTemp = rankList.size();
+					if(topSizeTemp > topSize){
+						System.out.println("Size: " + rankList.size());
+					}
+					
+					try {
+						ToolFile.fromStringToFile(sb.toString(), "d://log_ranking.txt", false, true);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+					if(flag)
+						System.out.println(sb.toString());
+					
+					try {
+						Thread.sleep(watchTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 	}
 }
