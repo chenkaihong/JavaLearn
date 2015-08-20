@@ -1,14 +1,5 @@
 package com.bear.demo.nettyDemo;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import com.bear.tool.ToolClassFind;
-import com.bear.tool.ToolPath;
-import com.google.protobuf.MessageLite;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -16,7 +7,19 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public final class GameServer {
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
+import com.bear.tool.ToolClassFind;
+import com.bear.tool.ToolPath;
+import com.google.protobuf.MessageLite;
+
+@Description(description="netty + protobuf + 消息分派的完整示例", sort="N")
+public final class GameServer implements Demos{
 
 	private final static Logger logger = Logger.getLogger(GameServer.class);
     private final static GameServer me = new GameServer();

@@ -8,7 +8,11 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class BIOServer {
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
+
+@Description(description="BIO 示例", sort="B")
+public class BIOServer implements Demos{
 
 	public static void main(String[] args) {
 		

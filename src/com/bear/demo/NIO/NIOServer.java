@@ -10,7 +10,11 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
-public class NIOServer {
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
+
+@Description(description="NIO 示例", sort="N")
+public class NIOServer implements Demos{
 
 	public static void main(String[] args) throws IOException {
 		new NIOServer().start();

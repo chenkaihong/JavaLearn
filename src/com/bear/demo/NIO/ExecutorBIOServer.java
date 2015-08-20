@@ -9,7 +9,11 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ExecutorBIOServer {
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
+
+@Description(description="伪BIO示例", sort="B")
+public class ExecutorBIOServer implements Demos{
 
 	public static void main(String[] args) throws IOException {
 		

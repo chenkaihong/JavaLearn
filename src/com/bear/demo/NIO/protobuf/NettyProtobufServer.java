@@ -17,10 +17,13 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 import com.bear.demo.NIO.protobuf.CmdBox.Cmd;
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
 
-public class NettyProtobufServer {
-
-public static void main(String[] args) throws InterruptedException {
+@Description(description="Protobuf 传输示例", sort="P")
+public class NettyProtobufServer implements Demos{
+	
+	public static void main(String[] args) throws InterruptedException {
 		
 		EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -36,9 +39,7 @@ public static void main(String[] args) throws InterruptedException {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-		
 	}
-	
 }
 
 class ServerConfig extends ChannelInitializer<SocketChannel> {

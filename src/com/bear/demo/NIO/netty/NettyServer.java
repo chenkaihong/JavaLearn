@@ -18,7 +18,11 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class NettyServer {
+import com.bear.scan.Demos;
+import com.bear.scan.Description;
+
+@Description(description="netty 传输示例", sort="N")
+public class NettyServer implements Demos{
 
 	public static void main(String[] args) throws InterruptedException {
 		

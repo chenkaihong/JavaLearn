@@ -1,4 +1,4 @@
-package com.bear.demo.Message;
+package com.bear.demo;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
