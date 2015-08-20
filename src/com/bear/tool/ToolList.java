@@ -8,4 +8,8 @@ public class ToolList {
 		return list == null || list.size() <= 0;
 	}
 	
+	public static boolean isEmpty(Object[] objs){
+		return objs == null || objs.length <= 0;
+	}
+	
 }

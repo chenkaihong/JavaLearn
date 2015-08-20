@@ -148,6 +148,19 @@ class JsonFill implements DataFill{
 		return new Gson().toJson(content);
 	}
 }
+class ProtobufFill implements DataFill{
+
+	@Override
+	public Object inFill(String json, Class<?> type) {
+		return null;
+	}
+
+	@Override
+	public Object outFill(Object content) {
+		return null;
+	}
+	
+}
 
 /**
  * 游戏系统标记接口

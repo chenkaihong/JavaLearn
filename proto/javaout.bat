@@ -1,1 +1,1 @@
-protoc Cmd.proto --java_out=javaout
+protoc CmdBox.proto --java_out=javaout

@@ -1,0 +1,1 @@
+protoc WorldClockProtocol.proto --java_out=javaout

@@ -1,39 +1,29 @@
 package com.bear.demo.protobuff;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.protobuf.ProtobufDecoder;
-import io.netty.handler.codec.protobuf.ProtobufEncoder;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bear.demo.protobuff.Cmd.CmdData;
 import com.bear.demo.protobuff.Cmd.CmdMessage;
 import com.bear.demo.protobuff.Cmd.CmdTest;
 import com.bear.scan.Demos;
 import com.bear.scan.Description;
-import com.google.protobuf.MessageLite;
-import com.google.protobuf.MessageLiteOrBuilder;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 @Description(description="ProtoBuf 编码与解码", sort="P")
 public class ProtoBufDemo implements Demos{
 
 	public static void main(String[] args) throws Exception {
 		
-		Encode encode = new Encode();
-		Decode decode = new Decode(Cmd.CmdData.getDefaultInstance());
-		
-		
 		CmdData cmd = newData();
+		ByteBuf buf = Unpooled.wrappedBuffer(cmd.toByteArray());
+		CmdData model = CmdData.parseFrom(buf.array());
 		
-		List<ByteBuf> bufList = encode.encode(cmd);
+		CmdTest test = CmdTest.parseFrom(model.getData().toByteArray());
 		
-		List<CmdData> model = decode.decode(bufList.get(0));
+		System.out.println(buf);
+		System.out.println(model.getMessage().getPlayerId());
 		
-		System.out.println(bufList);
-		
-		System.out.println(model.get(0).getMessage().getPlayerId());
-		
+		System.out.println(test.getId());
 	}
 	
 	private static CmdData newData(){
@@ -54,27 +44,5 @@ public class ProtoBufDemo implements Demos{
 		cdb.setData(builder.build().toByteString());
 		CmdData cmd = cdb.build();
 		return cmd;
-	}
-}
-
-class Encode extends ProtobufEncoder{
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<ByteBuf> encode(MessageLiteOrBuilder msg) throws Exception{
-		List list = new ArrayList();
-		super.encode(null, msg, list);
-		return list;
-	}
-}
-class Decode extends ProtobufDecoder{
-	public Decode(MessageLite prototype) {
-		super(prototype);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> List<T> decode(ByteBuf msg) throws Exception{
-		List<Object> list = new ArrayList<Object>();
-		super.decode(null, msg, list);
-		return (List<T>) list;
 	}
 }
