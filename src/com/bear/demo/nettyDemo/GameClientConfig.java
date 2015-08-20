@@ -15,8 +15,6 @@
  */
 package com.bear.demo.nettyDemo;
 
-import com.bear.demo.nettyDemo.CmdBox.Cmd;
-
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -24,6 +22,8 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+
+import com.bear.demo.nettyDemo.CmdBox.Cmd;
 
 public class GameClientConfig extends ChannelInitializer<SocketChannel> {
 
@@ -33,6 +33,7 @@ public class GameClientConfig extends ChannelInitializer<SocketChannel> {
 
         p.addLast(new ProtobufVarint32FrameDecoder());
         p.addLast(new ProtobufDecoder( Cmd.getDefaultInstance() ));
+        p.addLast(GameProtobufDecoder.me());
 
         p.addLast(new ProtobufVarint32LengthFieldPrepender());
         p.addLast(new ProtobufEncoder());

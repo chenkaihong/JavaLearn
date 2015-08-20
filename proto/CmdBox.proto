@@ -1,4 +1,4 @@
-package com.bear.demo.nettyDemo;
+package com.bear.demo.NIO.protobuf;
 message Cmd {
     required Message message = 1;
     optional bytes childMessage = 2;

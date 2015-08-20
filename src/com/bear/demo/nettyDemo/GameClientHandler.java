@@ -20,7 +20,7 @@ import com.bear.demo.nettyDemo.CmdBox.PlayerMoveResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class GameClientHandler extends SimpleChannelInboundHandler<PlayerMoveResponse> {
+public class GameClientHandler extends SimpleChannelInboundHandler<GameMessageTemp> {
 	
 	@Override
     public void channelRegistered(ChannelHandlerContext ctx) {
@@ -28,9 +28,10 @@ public class GameClientHandler extends SimpleChannelInboundHandler<PlayerMoveRes
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, PlayerMoveResponse response) throws Exception {
-        int X = response.getX();
-        int Y = response.getY();
+    public void channelRead0(ChannelHandlerContext ctx, GameMessageTemp response) throws Exception {
+    	PlayerMoveResponse temp = (PlayerMoveResponse) response.message;
+        int X = temp.getX();
+        int Y = temp.getY();
         System.out.println("X: " + X + " ,Y: " + Y);
     }
 

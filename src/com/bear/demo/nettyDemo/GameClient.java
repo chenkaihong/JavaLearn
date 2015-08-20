@@ -15,16 +15,16 @@
  */
 package com.bear.demo.nettyDemo;
 
-import com.bear.demo.nettyDemo.CmdBox.Cmd;
-import com.bear.demo.nettyDemo.CmdBox.Message;
-import com.bear.demo.nettyDemo.CmdBox.PlayerMoveRequest;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
+import com.bear.demo.nettyDemo.CmdBox.Cmd;
+import com.bear.demo.nettyDemo.CmdBox.Message;
+import com.bear.demo.nettyDemo.CmdBox.PlayerMoveRequest;
+import com.bear.demo.nettyDemo.CmdBox.PlayerMoveResponse;
 
 /**
  * Sends a list of continent/city pairs to a {@link WorldClockServer} to
@@ -40,23 +40,17 @@ public final class GameClient {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
-             .handler(new GameClientConfig());
-
+            b.group(group).channel(NioSocketChannel.class).handler(new GameClientConfig());
             Channel ch = b.connect(HOST, PORT).sync().channel();
             
             Message message = Message.newBuilder().setMessageId(10001)
             									  .setServerId(12)
             									  .setPlayerId(12000000).build();
             PlayerMoveRequest request = PlayerMoveRequest.newBuilder().setMoveStep(5).setMoveDirection(30).build();
-            
             Cmd cmd = Cmd.newBuilder().setMessage(message).setChildMessage(request.toByteString()).build();
+            GameProtobufDecoder.me().mapping(10001, PlayerMoveResponse.class);
 
-            ChannelFuture future = ch.writeAndFlush(cmd);
-            
-            future.sync();
-
+            ch.writeAndFlush(cmd);
             ch.closeFuture().sync();
         } finally {
             group.shutdownGracefully();

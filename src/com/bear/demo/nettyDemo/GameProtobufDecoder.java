@@ -9,8 +9,10 @@ import com.bear.demo.nettyDemo.CmdBox.Cmd;
 import com.google.protobuf.MessageLite;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.MessageToMessageDecoder;
 
+@Sharable
 public class GameProtobufDecoder extends MessageToMessageDecoder<Cmd>{
 	
 	private final static GameProtobufDecoder me = new GameProtobufDecoder();
