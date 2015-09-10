@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="true" monitoring="autodetect"
+         dynamicConfig="true">
+
+ 	<diskStore path="java.io.tmpdir" />
+
+	<!-- 指定除自身之外的网络群体中其他提供同步的主机列表，用“|”分开不同的主机 -->
+	<cacheManagerPeerProviderFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+		properties="peerDiscovery=manual,rmiUrls=//localhost:40004/metaCache|//localhost:60000/metaCache" />
+
+	<!-- 配宿主主机配置监听程序，来发现其他主机发来的同步请求 -->
+	<cacheManagerPeerListenerFactory
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+		properties="port=60000,socketTimeoutMillis=120000" />
+
+	<!-- 默认缓存 -->
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU">
+	</defaultCache>
+
+	<!-- 缓存 -->
+	<cache name="metaCache" 
+		maxElementsInMemory="1000" 
+		eternal="false"
+		timeToIdleSeconds="2000" 
+		timeToLiveSeconds="1000" 
+		overflowToDisk="false">
+		<cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+		<!-- <bootstrapCacheLoaderFactory
+			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"
+			properties="bootstrapAsynchronously=false" /> -->
+	</cache>
+</ehcache>
