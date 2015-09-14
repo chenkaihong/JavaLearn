@@ -1,8 +1,16 @@
 package com.bear.tool;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 public class ToolString {
+	
+	public final static String encoding = "UTF-8";
+	
+	public final static String regExp_chinese_1 = "[\\u4e00-\\u9fa5]"; // 匹配中文字符
 	
 	public static boolean isEmpty(String temp){
 		if(temp == null){
@@ -10,6 +18,30 @@ public class ToolString {
 		}
 		temp = temp.trim();
 		return temp.length() <= 0;
+	}
+	
+	/**
+	 * 将流转为String
+	 * @param is
+	 * @param type
+	 * @return
+	 * @throws IOException
+	 */
+	public static String fromStreamToString(InputStream is, CharSequence type) throws IOException{
+		BufferedReader in = null;
+		InputStreamReader ir = null;
+		try{
+			ir = new InputStreamReader(is);
+			in = new BufferedReader(ir);
+	        String line;
+	        StringBuilder result = new StringBuilder(type);
+	        while ((line = in.readLine()) != null) {
+	            result.append(line);
+	        }
+	        return result.toString();
+		} finally{
+			ToolClose.close(ir, in);
+		}
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {
@@ -24,13 +56,13 @@ public class ToolString {
 //		System.out.println(hasUTF_4("abdki汉字💀VI、%$^%&"));     // 这行中,💀是UTF-8的4字节模式
 //		System.out.println(hasUTF_4("#$%@#$%fdsf12312贰＆ァБ"));
 		
-		System.out.println(hasUTF_4("💕"));
-		
-		System.out.println(hasUTF_4("🌹"));
-		
-		for(byte s : "🌹".getBytes()){
-			System.out.println(Integer.toHexString(s));
-		}
+//		System.out.println(hasUTF_4("💕"));
+//		
+//		System.out.println(hasUTF_4("🌹"));
+//		
+//		for(byte s : "🌹".getBytes()){
+//			System.out.println(Integer.toHexString(s));
+//		}
 	}
 	
 	/**

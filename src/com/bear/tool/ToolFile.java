@@ -4,11 +4,41 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 
 public class ToolFile {
+	
+	/**
+	 * 将文件读成String
+	 * @param fileLocal 需要读取的文件路径
+	 * @return
+	 * @throws IOException
+	 */
+	public static String fromFileToString(String fileLocal) throws IOException{
+		File file = new File(fileLocal);
+		if(!isCanRead(file)){
+			throw new IOException("It's not a file! -> " + file);
+		}
+		
+		FileReader fr = null;
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+		try{
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+			
+			String temp;
+			while((temp = br.readLine()) != null){
+				sb.append(temp).append("\n");
+			}
+		}finally{
+			ToolClose.close(br, fr);
+		}
+		return sb.toString();
+	}
 	
 	/**
 	 * 迭代删除文件
@@ -91,5 +121,14 @@ public class ToolFile {
 	
 	public static boolean isExists(File file){
 		return file != null && file.exists();
+	}
+	public static boolean isCanRead(File file){
+		return isExists(file) && file.isFile() && file.canRead();
+	}
+	public static boolean isCanWrite(File file){
+		return isExists(file) && file.isFile() && file.canWrite();
+	}
+	public static boolean isCanReadAndWrite(File file){
+		return isCanRead(file) && isCanWrite(file);
 	}
 }
