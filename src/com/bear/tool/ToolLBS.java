@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class ToolGeoHash {
+public class ToolLBS {
 	
 	private final static char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
 										   'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 
@@ -27,6 +27,8 @@ public class ToolGeoHash {
 	private final static byte Direction_Down = 1;						// 向下移动
 	private final static byte Direction_ToLeft = 2;						// 向左移动
 	private final static byte Direction_ToRight = 3;					// 向右移动
+	
+	private static final  double EARTH_RADIUS = 6378137;				//赤道半径(单位m)
 	
 	
 	static{
@@ -60,15 +62,48 @@ public class ToolGeoHash {
 	}
 
 	public static void main(String[] args) {
-		double x = 39.928167;	// 纬度
-		double y = 116.389550;	// 经度
+		double lat1 = 23.142731;	// 纬度
+		double lon1 = 113.293134;	// 经度
 		
-		String geoHash = encodeGeoHash(x, y);
+		double lat2 = 23.143205;	// 纬度
+		double lon2 = 113.301506;	// 经度
+		
+		String geoHash = encodeGeoHash(lon1, lat1);
 		System.out.println("GeoHash: " + geoHash);
-		
 		System.out.println(getNeighbor(geoHash));
+		
+		System.out.println(getDistance(lon1, lat1, lon2, lat2));
 	}
 	
+	/**
+	 * 基于googleMap中的算法得到两经纬度之间的距离,计算精度与谷歌地图的距离精度差不多，相差范围在0.2米以下
+	 * @param lon1 第一点的精度
+	 * @param lat1 第一点的纬度
+	 * @param lon2 第二点的精度
+	 * @param lat3 第二点的纬度
+	 * @return 返回的距离，单位m
+	 * */
+	public static double getDistance(double lon1,double lat1,double lon2, double lat2){
+	   double radLat1 = rad(lat1);
+	   double radLat2 = rad(lat2);
+	   double a = radLat1 - radLat2;
+	   double b = rad(lon1) - rad(lon2);
+	   double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2)+Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+	   s = s * EARTH_RADIUS;
+	   return s;
+	}
+	/**
+	 * 转化为弧度(rad)
+	 * */
+	private static double rad(double d){
+	   return d * Math.PI / 180.0;
+	}
+	
+	/**
+	 * 获取geoHash附近的8个geoHash 包括其本身
+	 * @param geoHash
+	 * @return
+	 */
 	public static Set<String> getNeighbor(String geoHash){
 		Set<String> geoHashSet = new HashSet<String>();
 		
@@ -227,12 +262,12 @@ public class ToolGeoHash {
 		// 7         +-0.076
 		// 8         +-0.019
 		// 9         +-0.002
-	 * @param x
-	 * @param y
+	 * @param lat	纬度
+	 * @param lon	经度
 	 * @param precision
 	 * @return
 	 */
-	public static String encodeGeoHash(double x,double y){
+	public static String encodeGeoHash(double lon,double lat){
 		double x_Left_range = -90;
 		double x_right_range = 90;
 		double y_Left_range = -180;
@@ -243,7 +278,7 @@ public class ToolGeoHash {
 		long bits = 0;
 		for(int i = 0; i < times; i++){
 			double tempY = (y_Left_range + y_right_range) / 2;
-			if(y >= tempY){
+			if(lon >= tempY){
 				y_Left_range = tempY;
 				bits += bitsModel[index];
 			}else{
@@ -252,7 +287,7 @@ public class ToolGeoHash {
 			index++;
 			
 			double tempX = (x_Left_range + x_right_range) / 2;
-			if(x >= tempX){
+			if(lat >= tempX){
 				x_Left_range = tempX;
 				bits += bitsModel[index];
 			}else{
