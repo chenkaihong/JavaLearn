@@ -15,13 +15,14 @@ import com.google.gson.Gson;
 public final class BaiDuMapApi {
  
     public static void main(String[] args) throws IOException {
-    	BaiDuMapApi.getPoint();
+//    	BaiDuMapApi.getPoint();
 //    	
 //    	String jsonString = ToolFile.fromFileToString("D:\\1.txt");
 //    	
 //    	Gson json = new Gson();
 //        LBS_Local_Model local = json.fromJson(jsonString, LBS_Local_Model.class);
 //        System.out.println(json.toJson(local));
+    	
 	}
  
     /*
